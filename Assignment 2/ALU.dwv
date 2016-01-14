@@ -1,0 +1,45 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+
+entity ALU is
+	port(rs, rt : in std_logic_vector(15 downto 0);
+		c0 : in std_logic;
+		sel : in std_logic_vector(2 downto 0);
+		res : out std_logic_vector(15 downto 0);
+		lt, eq : out boolean);
+end ALU;
+
+architecture behav of ALU is 
+
+begin
+	process is
+	variable res_val : std_logic_vector(15 downto 0);
+	begin
+	case sel is
+	when "000" =>
+		res_val := X"000" & "000" & c0;
+	when "001" =>
+		res_val := rs + (X"000" & "000" & c0);
+	when "010" =>
+		res_val := rs - X"0001";
+	when "011" =>
+		res_val := rs + rt;
+	when "100" =>
+		res_val := rs + not(rt) + (X"000" & "000" & c0);
+	when "101" =>
+		res_val := rs and rt;
+	when "110" =>
+		res_val := not(rs) + (X"000" & "000" & c0);
+	when "111" =>
+		res_val := rt + (X"000" & "000" & c0);
+	end case;
+	
+	res <= res_val;
+	eq <= (rs = rt);
+	lt <= (to_integer(signed(rs)) < to_integer(signed(rt)));
+
+	wait on sel,rs,rt,c0;
+	end process;
+
+end behav;		

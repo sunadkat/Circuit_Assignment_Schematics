@@ -1,0 +1,49 @@
+library IEEE;
+
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+use work.all;
+
+entity test_CAM is
+end test_CAM;
+
+architecture behav of test_CAM is
+signal clk, cs, r, hit, rdy : std_logic;
+signal data : std_logic_vector(11 downto 0);
+signal mv : std_logic_vector(3 downto 0);
+signal addr: std_logic_vector(1 downto 0);
+
+begin
+   The_Test_CAM : CAM
+      port map(clk=>clk, cs=>cs, r=>r, addr=>addr, data=>data, 
+               mv=>mv, hit=>hit, rdy=>rdy);
+      
+   process is
+   begin
+      cs <= '0'; r<='0'; 
+      data <= X"004"; 
+      addr <= "00";
+      for i in 0 to 3 loop
+         wait for 40 ns;
+         cs <= '1';
+         wait for 40 ns;
+         cs <= '0';
+         data <= data + X"001";
+         addr <= addr + "01";
+      end loop;
+      wait for 40 ns;
+      data <= X"005";
+      cs <= '1'; r <= '1';
+      wait for 40 ns;
+      cs <= '0';
+      wait;
+   end process;
+   
+   process is
+   begin
+      clk <= '0', '1' after 10 ns;
+      wait for 20 ns;
+   end process;
+end behav;
+      

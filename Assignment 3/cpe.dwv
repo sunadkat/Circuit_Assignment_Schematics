@@ -1,0 +1,181 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+
+entity cpe is
+	port(
+		state :  in std_logic_vector(3 downto 0);
+		c0, s0, lr, wt, lir, clp, lp, up, cs, r : out std_logic;
+		sel : out std_logic_vector(2 downto 0)
+		);
+end cpe;
+
+architecture behav of cpe is
+begin
+	process is
+	variable s0_val, lr_val, c0_val, lir_val, clp_val, lp_val, up_val, cs_val, r_val, wt_val: std_logic;
+	variable sel_val : std_logic_vector(2 downto 0);
+	begin
+		case state is
+		when "0000" => --stop
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+			lir_val := '0';
+			clp_val := '1';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+			wt_val := '1';
+		when "0001" => --1
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+			wt_val := '0';
+		when "0010" => --2
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+			lir_val := '1';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '1';
+			cs_val := '0';
+			r_val := '0';
+			wt_val := '0';
+		when "0011" => --3
+		s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+			wt_val := '0';
+		when "0100" => --add (4)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '0';
+			sel_val := "011";
+			wt_val := '0';
+			
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		when "0101" => --subtact (5)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '1';
+			sel_val := "100";
+			wt_val := '0';
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		when "0110" => --increment (6)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '1';
+			sel_val := "001";
+			wt_val := '0';
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		when "0111" => --decrement (7)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '0';
+			sel_val := "010";
+			wt_val := '0';
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		when "1000" => --BEQ (8)
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+			wt_val := '0';
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		when "1001" => --LRI (9)
+			s0_val := '0';
+			lr_val := '1';
+			c0_val := '0';
+			sel_val := "000";
+			wt_val := '0';
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		when "1010" => --DSPL (10)
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+			wt_val := '1';
+			--
+			lir_val := '0';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		when "1011" => --BEQ2 (11)
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+			wt_val := '0';
+			lir_val := '1';
+			clp_val := '0';
+			lp_val := '0';
+			up_val := '0';
+			cs_val := '0';
+			r_val := '0';
+		end case;
+		
+		s0 <= s0_val;
+		lr <= lr_val;
+		c0 <= c0_val;
+		sel <= sel_val;
+		lir <= lir_val;
+		clp <= clp_val;
+		lp <= lp_val;
+		up <= up_val;
+		cs <= cs_val;
+		r <= r_val;
+		wt <= wt_val;
+		wait on state;
+	end process;
+end behav;

@@ -1,0 +1,65 @@
+library IEEE;
+
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+use work.all;
+
+entity Test_MPY8 is
+end Test_MPY8;
+
+architecture testbench of Test_MPY8 is 
+signal clk, mpy : std_logic;
+signal a, b : std_logic_vector (7 downto 0);
+signal prod : std_logic_vector (15 downto 0);
+signal  rdy : std_logic;
+--signal test : std_logic_vector (2 downto 0);
+begin
+
+MPY8_Entity : MPY8
+	port map( clk => clk, a => a, b => b, prod => prod, rdy => rdy, mpy => mpy);
+	
+	process is
+		begin
+		
+		a <= "00000100"; b <= "00000111"; mpy <= '0'; --a = 4, b = 7 
+		wait for 40 ns;
+		mpy <= '1';
+		wait for 500 ns;
+		
+		b <= "11111001"; mpy <= '0'; -- a = 4, b = -7
+		wait for 40 ns;
+		mpy <= '1';
+		wait for 500 ns;
+		
+		a <= "11111100"; mpy <= '0'; -- a = -4, b = -7
+		wait for 40 ns;
+		mpy <= '1';
+		wait for 500 ns;
+		
+		a <= "00000100"; b <= "00000000"; mpy <= '0'; -- a = 4, b = 0
+		wait for 40 ns;
+		mpy <= '1';
+		wait for 500 ns;
+		
+		a <= "01111111"; b <= "01111111"; mpy <= '0'; -- a = 127, b = 127
+		wait for 40 ns;
+		mpy <= '1';
+		wait for 500 ns;
+		
+		a <= "10000000"; b <= "10000000"; mpy <= '0'; -- a = -128, b = -128
+		wait for 40 ns;
+		mpy <= '1';
+		wait;
+	end process;
+	
+	process is
+	begin
+		clk <= '0';
+		clk <= '1' after 20 ns;
+		wait for 40 ns;
+	end process;
+end testbench; 
+		
+		
+			

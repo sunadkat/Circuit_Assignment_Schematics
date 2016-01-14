@@ -1,0 +1,59 @@
+library IEEE;
+
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity CReg is
+	port( ld, rd, clk : in std_logic;
+		  data : in std_logic_vector(11 downto 0);
+		  mbit, rdy : out std_logic);
+end CReg;
+
+architecture behav of CReg is
+type state is (WT, STO, RET);
+type memory is array(0 to 0) of std_logic_vector(11 downto 0);
+signal new_state : state; 
+begin
+	--State Transition Process
+	process is
+	variable curr_state : state := WT;
+	begin
+		if clk = '1' then
+			case curr_state is
+				when WT =>
+					if ld = '1' then curr_state := STO;
+					elsif ld = '0' and rd = '1' then curr_state := RET;
+					end if;
+				when STO =>
+					curr_state := WT;
+				when RET =>
+					curr_state := RET;
+			end case;
+		end if;
+		new_state <= curr_state;
+		wait on clk;
+	end process;
+	
+	--Asserted Output Process
+	process is
+	variable rdy_val : std_logic := '1';
+	variable mbit_val : std_logic := '1';
+	variable Reg : memory;
+	begin
+		case new_state is
+			when WT =>
+				rdy_val := '1';
+			when STO =>
+				rdy_val := '0';
+				Reg(0) := data;
+			when RET =>
+				rdy_val := '0';
+				if Reg(0) = data then mbit_val := '1';
+				else mbit_val := '0';
+				end if;
+		end case;
+		mbit <= mbit_val;
+		rdy <= rdy_val;
+		wait on new_state;
+	end process;
+end behav;

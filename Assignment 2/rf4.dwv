@@ -1,0 +1,40 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+
+entity rf4 is
+	port(
+		lr, clk : in std_logic;
+		s : in std_logic_vector(1 downto 0);
+		t : in std_logic_vector(1 downto 0);
+		d : in std_logic_vector(1 downto 0);
+		rd : in std_logic_vector(15 downto 0);
+		rs : out std_logic_vector(15 downto 0);
+		rt : out std_logic_vector(15 downto 0)
+		);
+end rf4;
+
+architecture behav of rf4 is
+type memory is array (0 to 3) of std_logic_vector(15 downto 0);
+begin
+	process is
+	variable R : memory;
+	variable s_locn : natural;
+	variable t_locn : natural;
+	variable d_locn : natural;
+	begin
+		if clk = '1' then
+		s_locn := to_integer(s);
+		t_locn := to_integer(t);
+		d_locn := to_integer(d);
+		                
+		if lr = '1' then
+			R(d_locn) := rd;
+		end if;
+				              
+		rs <= R(s_locn);
+		rt <= R(t_locn);
+		end if;
+	wait on clk;
+	end process;
+end behav;

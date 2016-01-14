@@ -1,0 +1,94 @@
+library IEEE;
+
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity CAM is
+	port( cs, r, clk : in std_logic;
+		  addr : in std_logic_vector(1 downto 0);
+		  data : in std_logic_vector(11 downto 0);
+		  mv : out std_logic_vector(3 downto 0);
+		  rdy, hit : out std_logic);
+end CAM;
+
+architecture behav of CAM is
+type state is (WT, STO, R0, R1, R2, R3);
+type memory is array(0 to 3) of std_logic_vector(11 downto 0);
+signal new_state : state; 
+signal eq : boolean;
+begin
+	--State Transition Process
+	process is
+	variable curr_state : state := WT;
+	begin
+		if clk = '1' then
+		case curr_state is
+			when WT =>
+				if cs = '0' then curr_state := WT;
+				elsif cs = '1' and r = '0' then curr_state := STO;
+				elsif cs = '1' and r = '1' then curr_state := R0;
+				end if;
+			when STO =>
+				if cs = '0' then curr_state := WT;
+				end if;
+			when R0 =>
+			   	curr_state := R1;
+			when R1 =>
+				if eq = true then curr_state := R3;
+				else curr_state := R2;
+				end if;
+			when R2 =>
+				curr_state := R0;
+			when R3 =>           
+				if cs = '0' then curr_state := WT;
+				end if;
+		end case;
+		end if;
+		new_state <= curr_state;
+		wait on clk;
+	end process;
+	
+	--Asserted Output Process
+	process is
+	variable i : integer := 0;
+	variable mv_val : std_logic_vector(3 downto 0) := "0000";
+	variable rdy_val : std_logic := '1';
+	variable hit_val : std_logic := '0';
+	variable addr_val : integer;
+	variable CAM : memory;
+	begin
+		case new_state is
+			when WT =>
+				i := 0;
+				mv_val := "0000";
+				rdy_val := '1';
+				hit_val := '0';
+			when STO =>
+				addr_val := to_integer(addr);
+				CAM(addr_val) := data;
+				rdy_val := '0';
+			when R0 =>
+				if i = 4 then eq <= true;
+				else eq <= false;
+				end if;
+				rdy_val := '0';
+			when R1 =>
+			
+			when R2 =>
+				if CAM(i) = data then mv_val(i) := '1';
+				else mv_val(i) := '0';
+				end if;
+				i := i + 1;
+			when R3 =>
+				if mv_val = "0000" then hit_val := '0';
+				else hit_val := '1';
+				end if; 
+				rdy_val := '1';
+		end case;
+		
+		hit <= hit_val;
+		rdy <= rdy_val;
+		mv <= mv_val;
+		wait on new_state;
+	end process;
+end behav;

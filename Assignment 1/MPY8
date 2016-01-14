@@ -1,0 +1,113 @@
+library IEEE;
+
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity MPY8 is
+	port( clk, mpy : in std_logic;
+		  a, b : in std_logic_vector (7 downto 0);
+		  prod : out std_logic_vector (15 downto 0);
+		  rdy : out std_logic);
+end MPY8;
+
+architecture behav of MPY8 is
+type state is (WT, S1, S2, S3, S4, S5, S6, S7); --state type declerations
+signal new_state: state; 
+signal test: std_logic_vector(2 downto 0);
+signal done: boolean;
+begin
+	--State Transition Process
+	process is
+	variable curr_state: state := WT;
+	variable test: std_logic_vector(2 downto 0);
+	begin
+		if clk = '1' then
+			case curr_state is
+				when WT =>
+					if mpy = '1' then curr_state := S1;
+					end if;
+				when S1 =>
+					if test = "000" or test = "111" then curr_state := S6;
+					elsif test = "001" or test = "010" then curr_state := S2;
+					elsif test = "011" then curr_state := S3;
+					elsif test = "100" then curr_state := S4;
+					elsif test = "101" or test = "110" then curr_state := S5;
+					end if;
+				when S2 =>
+					curr_state := S6;
+				when S3 =>       
+					curr_state := S6;
+				when S4 =>           
+					curr_state := S6;
+				when S5 =>           
+					curr_state := S6;
+				when S6 =>
+					if done = false then curr_state := S1;
+					elsif done = true then curr_state := S7;
+					end if;
+				when S7 =>
+					if mpy = '0' then curr_state := WT;
+					end if;
+			end case;
+		end if;
+		new_state <= curr_state;
+		wait on clk;
+	end process;
+	
+	--Asserted Output Process
+	process is
+	variable P: std_logic_vector(17 downto 0);
+	variable M: std_logic_vector(8 downto 0);
+	variable NegM: std_logic_vector(8 downto 0);
+	variable I: integer;
+	variable initialized: boolean := false;
+	begin
+		if new_state <= WT or initialized = false then
+			I := 0;
+			P(17 downto 9) := "000000000";
+			P(8 downto 1) := a;
+			P(0) := '0';
+			M(8) := b(7);
+			M(7) := '0';
+			M(6 downto 0) := b(6 downto 0);
+			if M(8) = '0' then
+				NegM := not M;
+				NegM := NegM + '1';
+			elsif M(8) = '1' then
+				NegM := M - '1';
+				NegM := not NegM;
+			end if;
+			
+			initialized := true;
+			done <= false;
+			rdy <= '0';
+		end if;
+		
+		case new_state is
+			when WT =>
+			when S1 =>
+				I := I + 1;
+			when S2 =>
+				P(17 downto 9) := P(17 downto 9) + M(8 downto 0);
+			when S3 =>
+				P(17 downto 9) := P(17 downto 9) + M(8 downto 0) sll 1;
+			when S4 =>
+				P(17 downto 9) := P(17 downto 9) + NegM(8 downto 0) sll 1;
+			when S5 =>
+				P(17 downto 9) := P(17 downto 9) + NegM(8 downto 0);
+			when S6 =>
+				P := P sra 2;
+			when S7 =>
+				prod <= P(16 downto 1);
+				rdy <= '1';
+		end case;
+		
+		
+		if I >= 4 then done <= true;
+		end if;
+		
+		test <= P(2 downto 0);
+		
+		wait on new_state;
+	end process;
+end behav;

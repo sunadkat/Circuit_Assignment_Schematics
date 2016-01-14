@@ -1,0 +1,34 @@
+library IEEE;
+
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity Dec2x4 is
+	port( en : in std_logic;
+		  sel : in std_logic_vector(1 downto 0);
+		  m0, m1, m2, m3 : out std_logic);
+end Dec2x4;
+
+architecture behav of Dec2x4 is
+begin
+	process is
+	variable m0_val, m1_val, m2_val, m3_val : std_logic;
+	begin
+		m0_val := '0';
+		m1_val := '0';
+		m2_val := '0';
+		m3_val := '0';
+		if en = '1' then
+			if sel = "00" then m0_val := '1';
+			elsif sel = "01" then m1_val := '1';
+			elsif sel = "10" then m2_val := '1';
+			elsif sel = "11" then m3_val := '1';
+			end if;
+		end if;
+		m0 <= m0_val;
+		m1 <= m1_val;
+		m2 <= m2_val;
+		m3 <= m3_val;
+		wait on en, sel;
+	end process;
+end behav;

@@ -1,0 +1,28 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+
+entity mux is
+	port(
+		s0 : in std_logic;
+		din : in std_logic_vector(7 downto 0);
+		res : in std_logic_vector(15 downto 0);
+		rd : out std_logic_vector(15 downto 0)
+		);
+end mux;
+
+architecture behav of mux is
+begin
+	process is
+	variable rd_val : std_logic_vector(15 downto 0);
+	begin
+		rd_val := "0000000000000000";
+		if s0 = '0' then
+			rd_val(7 downto 0) := din;	
+		else
+			rd_val := res;
+		end if;
+		rd <= rd_val;
+		wait on s0, din, res;
+	end process;
+end behav;

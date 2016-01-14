@@ -1,0 +1,69 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+
+entity cpe is
+	port(
+		state :  in std_logic_vector(3 downto 0);
+		c0, s0, lr, wt, lir, clp, lp, up, cs, r : out std_logic;
+		sel : out std_logic_vector(2 downto 0)
+		);
+end cpe;
+
+architecture behav of cpe is
+begin
+	process is
+	variable s0_val, lr_val, c0_val : std_logic;
+	variable sel_val : std_logic_vector(2 downto 0);
+	begin
+		case opc is
+		when "0000" => --stop
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+		when "0100" => --add (4)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '0';
+			sel_val := "011";
+		when "0101" => --subtact (5)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '1';
+			sel_val := "100";
+		when "0110" => --increment (6)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '1';
+			sel_val := "001";
+		when "0111" => --decrement (7)
+			s0_val := '1';
+			lr_val := '1';
+			c0_val := '0';
+			sel_val := "010";
+		when "1000" => --BEQ (8)
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+		when "0110" => --LRI
+			s0_val := '0';
+			lr_val := '1';
+			c0_val := '0';
+			sel_val := "000";
+		when "0111" => --nothing?
+			s0_val := '0';
+			lr_val := '0';
+			c0_val := '0';
+			sel_val := "000";
+		end case;
+		
+		s0 <= s0_val;
+		lr <= lr_val;
+		c0 <= c0_val;
+		sel <= sel_val;
+		
+		wait on state;
+	end process;
+end behav;

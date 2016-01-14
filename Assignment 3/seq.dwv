@@ -1,0 +1,74 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+
+entity seq is
+	port(
+		clk, eq, stb : in std_logic;
+		opc : in std_logic_vector(2 downto 0);
+		state : out std_logic_vector(3 downto 0)
+		);
+end seq;
+
+architecture behav of seq is
+begin
+	process is
+	variable curr_state : std_logic_vector(3 downto 0) := "0000";
+	begin
+		if clk = '1' then
+		case curr_state is
+		when "0000" =>
+			if stb = '1' then curr_state := "0001";
+			end if;
+		when "0001" => --1
+			curr_state := "0010";
+		when "0010" => --2
+			curr_state := "0011";
+		when "0011" => --3
+			case opc is
+			when "000" =>
+				curr_state := "0000";
+			when "001" =>
+				curr_state := "0100";
+			when "010" =>
+				curr_state := "0101";
+			when "011" =>
+				curr_state := "0110";
+			when "100" =>
+				curr_state := "0111";
+			when "101" =>
+				curr_state := "1000";
+			when "110" =>
+				curr_state := "1001";
+			when "111" =>
+				curr_state := "1010";
+			end case;
+		when "0100" => --4
+			curr_state := "0001";
+		when "0101" => --5
+			curr_state := "0001";
+		when "0110" => --6
+			curr_state := "0001";
+		when "0111" => --7       
+			curr_state := "0001";
+		when "1000" => --8
+			if eq = '1' then curr_state := "1011";
+			elsif eq = '0' then curr_state := "0001";
+			end if;
+		when "1001" => --9
+			curr_state := "0001";
+		when "1010" => --10
+			if stb = '1' then curr_state := "0001";
+			end if;
+		when "1011" => --11      
+			curr_state := "0001";
+		end case;
+		end if;
+        state <= curr_state;
+		
+		
+		wait on clk;
+	end process;
+end behav;
+		
+		
