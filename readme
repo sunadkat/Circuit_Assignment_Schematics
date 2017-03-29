@@ -1,1 +1,191 @@
 
+======================================
+BEARCOPTER
+======================================
+
+Version 0.65
+Release Date: TBA
+
+======================================
+Created by
+======================================
+
+Ethan Jung (hubbabubbagump)
+
+======================================
+Latest update
+======================================
+
+Release date:
+July 28 2014
+
+Version 0.65
+-separated effects upon eating a
+ green shroom and red shroom
+-green shroom still produces the high
+ effect
+-red shroom now makes the bear blink
+ and has the walls drop while 
+ disabling wall collisions; ground
+ and ceiling collisions are still 
+ in effect however
+
+======================================
+Version History
+======================================
+
+Version 0.6
+-fixed a bug in wall randomization
+-fixed hitboxes
+-added a button to return to the
+ menu on the game over screen
+-raised location of ceiling
+ (removing it altogether breaks
+ the game)
+-revamped graphics:
+	-changed light background
+	-added dark background
+	-updated wall graphics
+	-created graphics for dirt
+	-fixed grass graphics
+	-added animations for button 
+	 presses
+
+Version 0.5
+-changed way versions are handled
+-Adding sound effects and BGM
+-Added ads
+-randomized initial wall positions
+-Added a button to view high scores
+-updated button graphics
+-updated game over screen
+-added fruits
+-added shrooms
+-added score system
+-improved wall randomization
+-implemented a difficulty increase at 
+ 50 and 100 points respectively
+-added splashscreen and logo
+
+Version 0.4
+-Added a scoring system based on a
+ velocity / position system
+-Added font for numbers and text
+-Added gameStates
+-Added a way to restart the game
+ without closing and reopening the
+ game
+-added a play button
+
+Version 0.3
+-made textures
+-added animations
+-added sprites
+-rendered in objects
+-added collision
+-added ground and ceiling
+
+Version 0.2
+-Initialized a location for the
+ bear to start when the game begins
+-Retrieves the width and height of
+ the device
+-Added BearCopter.java which currently
+ handles the acceleration and velocity
+ of the bear
+-implemented velocity limit of 200
+-uses a y acceleration value to
+ simulate gravity
+-Implemented Inputhandler which handles 
+input
+-returns true when screen is pressed
+
+Version 0.1 
+-Created BCGame.java
+-Created GameRenderer.java
+-Created GameWorld.java
+-Created GameScreen.java
+-Programmed a rectangle to travel 
+left -> right on a black background.
+-Created BearCopter.java
+-Starting to handle physics of the
+ avatar.
+
+======================================
+Important known problems
+======================================
+
+n/a
+
+======================================
+Contact information
+======================================
+
+ethansjung@gmail.com
+
+======================================
+Thanks to
+======================================
+
+Quinlan
+Abrar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Backup AndroidManifest.xml (it tends to randomly reset and it's a pain to generate a new one)
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hubbabubbagump.bear_a_copter.android"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/GdxTheme" >
+        <meta-data android:name="com.google.android.gms.version"
+                   android:value="@integer/google_play_services_version"/>
+        <activity
+            android:name="com.hubbabubbagump.bear_a_copter.android.AndroidLauncher"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.google.android.gms.ads.AdActivity"
+                  android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+    </application>
+	<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+</manifest>
